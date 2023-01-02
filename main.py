@@ -29,7 +29,8 @@ def txt_alert(subject, body, to):
     msg["from"] = "Your Doctor"
 
     user = "bianiemeyer150894@gmail.com"
-    password = "sivlwyjeuaxtdhgf"
+    PASSWORD = os.environ["PASSWORD"]
+    password = PASSWORD
 
     server = smtplib.SMTP("smtp.gmail.com", 587)
     server.starttls()
