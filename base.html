@@ -2,17 +2,54 @@
 <html>
 <head>
     <title>Connects</title>
-
+    <script defer src="https://pyscript.net/latest/pyscript.js"></script>
 </head>
 
 <body>
     <h1>Connect to patients</h1>
-    <form>
-        <h3>Name <input type="text" name="name"></h3>
-        <h3>Email<input type="text" name="email"></h3>
-        <h3>Phone <input type="text" name="phone"></h3>
-        <h3>Account<input type="text" name="account"></h3>
-        <button type="submit">Submit</button>
-    </form>
+    <h3>Name <input type="text" name="name" id="name"></h3>
+    <h3>Email<input type="text" name="email" id="email"></h3>
+    <h3>Phone <input type="text" name="phone" id="phone"></h3>
+    <h3>Account<input type="text" name="account" id="account"></h3>
+    <button type="submit" id="button">Submit</button>
+
+    <py-script>
+        from js import document
+        from pyodide import create_proxy
+        import smtplib
+        from email.message import EmailMessage
+        import os
+
+        def sending_alert(subject, body, to):
+            msg = EmailMessage()
+            msg.set_content(body)
+            msg["subject"] = subject
+            msg["to"] = to
+            msg["from"] = "Your Doctor"
+
+            user = "bianiemeyer150894@gmail.com"
+            PASSWORD = os.environ["PASSWORD"]
+            password = PASSWORD
+
+            server = smtplib.SMTP("smtp.gmail.com", 587)
+            server.starttls()
+            server.login(user, password)
+            server.send_message(msg)
+            server.quit()
+        
+        name = document.getElementById("name")
+        email = document.getElementById("email")
+        phone = document.getElementById("phone")
+        account = document.getElementById("account")
+        subject = "Your HealthCare Facility - Action Required"
+        body = f"Dear {name},\nYour account {account} has a balance pending. For more information, please access www.yourhealthcare.com to have access your balance and get more information. \nThank you"
+        
+        proxy = create_proxy(sending_alert(subject, body, name))
+        send = document.getElementById("button")
+        send.addEventListener("click", proxy)
+
+
+        
+    </py-script>
 </body>
 </html>
